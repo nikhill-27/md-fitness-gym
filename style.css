@@ -1849,13 +1849,17 @@ h1, h2, h3, h4 {
   /* 1. Hero Canvas Optimization */
   .canvas-pin-container,
   #animation-canvas {
-    width: 100% !important;
-    height: 60vh !important;
+    display: block !important;
+    visibility: visible !important;
+    width: 100vw !important;
+    height: 55vh !important;
+    position: relative !important;
+    overflow: visible !important;
     object-fit: contain !important;
   }
   .hero-wrapper {
     height: auto !important;
-    min-height: 60vh !important;
+    min-height: 55vh !important;
   }
   
   /* 2. Grid & Flexbox Collapsing */
@@ -1864,8 +1868,16 @@ h1, h2, h3, h4 {
   .services-grid,
   .footer-main-grid,
   .success-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+  
+  .service-card,
+  .plan-card,
+  .compact-amenity-card {
+    width: 100% !important;
+    height: auto !important;
   }
   
   .nav-links,
@@ -1904,15 +1916,32 @@ h1, h2, h3, h4 {
 
   /* 4. Padding & Margins */
   .section-padding {
-    padding: 4rem 1.5rem !important;
+    padding: 3rem 1rem !important;
   }
   .hero-text-container {
     padding: 0 1.5rem !important;
+  }
+  .service-card, .plan-card, .compact-amenity-card {
+    padding: 1.5rem !important;
   }
   
   /* Reset complex Bento box span rules */
   .compact-amenity-card {
     grid-column: span 1 !important;
     grid-row: span 1 !important;
+  }
+  
+  /* 5. Fix Gallery Lag */
+  .marquee-wrapper,
+  .marquee-track,
+  .community-img {
+    transform: translate3d(0, 0, 0) !important;
+    backface-visibility: hidden !important;
+    perspective: 1000px !important;
+  }
+  
+  .marquee-track {
+    will-change: transform !important;
+    animation-duration: 45s !important; /* Slightly slower on mobile for performance */
   }
 }
