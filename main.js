@@ -104,6 +104,27 @@ function handleLoadProgress() {
   }
 }
 
+/* --- Lenis Smooth Scroll Setup --- */
+const lenis = new Lenis({
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  direction: 'vertical',
+  gestureDirection: 'vertical',
+  smooth: true,
+  mouseMultiplier: 1,
+  smoothTouch: false,
+  touchMultiplier: 2,
+  infinite: false,
+});
+
+lenis.on('scroll', ScrollTrigger.update);
+
+gsap.ticker.add((time) => {
+  lenis.raf(time * 1000);
+});
+
+gsap.ticker.lagSmoothing(0);
+
 /* --- ScrollTrigger Initialization --- */
 function initScrollAnimations() {
   // Fade out preloader
@@ -114,11 +135,18 @@ function initScrollAnimations() {
     onComplete: () => loaderOverlay.classList.add("loaded")
   });
 
-  // Initial Canvas Setup
+  // Initial Canvas Setup with Resize Debouncing
   resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(resizeCanvas, 150);
+  });
 
-  // Hero Canvas & Text Timeline
+  // GSAP MatchMedia for Responsive Triggers
+  let mm = gsap.matchMedia();
+
+  // Desktop & Mobile Hero Canvas Animation (Shared)
   const airRender = { frame: 0 };
   
   const heroTl = gsap.timeline({
@@ -131,14 +159,12 @@ function initScrollAnimations() {
     }
   });
 
-  // 1. First, slowly fade out the text as the user starts scrolling (takes ~15% of the scroll length)
   heroTl.to(".hero-text-container", {
     opacity: 0,
     duration: 0.15,
     ease: "power1.out"
   });
 
-  // 2. Then, begin scrubbing the canvas animation frames (takes the remaining 85% of the scroll length)
   heroTl.to(airRender, {
     frame: config.frameCount - 1,
     ease: "none",
@@ -152,7 +178,6 @@ function initScrollAnimations() {
     }
   });
 
-  // 3. Cinematic Tagline Reveal at the very end of the scrub
   heroTl.to(".hero-finale-tagline", {
     opacity: 1,
     transform: "translate(-50%, -50%)",
@@ -160,7 +185,6 @@ function initScrollAnimations() {
     ease: "power1.out"
   }, "-=0.15");
 
-  // Fade in the explore scroll indicator button at the same time
   heroTl.to(".explore-scroll-btn", {
     opacity: 1,
     pointerEvents: "auto",
@@ -168,38 +192,56 @@ function initScrollAnimations() {
     ease: "power1.out"
   }, "<");
 
-  // Reveal Animations for Page Content
-  gsap.from(".amenity-card", {
-    y: 50,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.2,
-    scrollTrigger: {
-      trigger: "#amenities",
-      start: "top 80%",
+  // Responsive Reveal Animations
+  mm.add({
+    isDesktop: "(min-width: 769px)",
+    isMobile: "(max-width: 768px)"
+  }, (context) => {
+    let { isMobile } = context.conditions;
+    
+    // Normalize scroll on mobile to prevent address-bar jitter during pins
+    if (isMobile) {
+      ScrollTrigger.normalizeScroll(true);
     }
-  });
+    
+    // On mobile, trigger later (top 90%) to ensure it's fully on screen before animating
+    const triggerStart = isMobile ? "top 90%" : "top 80%";
+    const staggerAmount = isMobile ? 0.1 : 0.2;
 
-  gsap.from(".plan-card", {
-    y: 50,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.2,
-    scrollTrigger: {
-      trigger: "#plans",
-      start: "top 80%",
-    }
-  });
+    gsap.from(".amenity-card", {
+      y: 50,
+      opacity: 0,
+      duration: 0.8,
+      stagger: staggerAmount,
+      scrollTrigger: {
+        trigger: "#amenities",
+        start: triggerStart,
+      }
+    });
 
-  gsap.from(".insta-item", {
-    scale: 0.9,
-    opacity: 0,
-    duration: 0.8,
-    stagger: 0.15,
-    scrollTrigger: {
-      trigger: "#community",
-      start: "top 80%",
-    }
+    gsap.from(".plan-card", {
+      y: 50,
+      opacity: 0,
+      duration: 0.8,
+      stagger: staggerAmount,
+      scrollTrigger: {
+        trigger: "#plans",
+        start: triggerStart,
+      }
+    });
+
+    gsap.from(".insta-item", {
+      scale: 0.9,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.15,
+      scrollTrigger: {
+        trigger: "#community",
+        start: triggerStart,
+      }
+    });
+    
+    return () => {}; // Cleanup function
   });
 }
 

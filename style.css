@@ -20,7 +20,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
 }
 
 body {
@@ -1843,6 +1842,14 @@ h1, h2, h3, h4 {
 }
 
 /* =========================================================================
+   HARDWARE ACCELERATION FOR ANIMATED ELEMENTS
+   ========================================================================= */
+.plan-card, .amenity-card, .compact-amenity-card, .service-card, .insta-item, .community-card {
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+/* =========================================================================
    COMPREHENSIVE MOBILE OPTIMIZATION OVERRIDES
    ========================================================================= */
 @media (max-width: 768px) {
@@ -1914,9 +1921,11 @@ h1, h2, h3, h4 {
     word-break: break-word !important;
   }
 
-  /* 4. Padding & Margins */
+  /* 4. Padding, Margins, & Content Visibility */
   .section-padding {
     padding: 3rem 1rem !important;
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 1000px;
   }
   .hero-text-container {
     padding: 0 1.5rem !important;
