@@ -1,0 +1,382 @@
+gsap.registerPlugin(ScrollTrigger);
+
+/* --- Navbar Scroll Effect --- */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
+/* --- Canvas Animation Configuration --- */
+const config = {
+  frameCount: 173,
+  framePath: (index) => `./frames/ezgif-1396dc2b0598705c-jpg/ezgif-frame-${String(index).padStart(3, '0')}.jpg`,
+  scrollLength: "450vh", // Scrub duration
+  scrubSpeed: 0.8
+};
+
+const canvas = document.getElementById("animation-canvas");
+const ctx = canvas.getContext("2d");
+const heroWrapper = document.querySelector(".hero-wrapper");
+
+// UI Elements
+const loaderOverlay = document.getElementById("loader-overlay");
+const progressBar = document.getElementById("progress-bar");
+const pctText = document.getElementById("pct-text");
+
+// Dynamic height assignment for the scroll container
+heroWrapper.style.height = config.scrollLength;
+
+const frames = [];
+let currentFrame = 0;
+let imagesLoaded = 0;
+
+/* --- Canvas Draw & Scale Logic --- */
+function resizeCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentNode.getBoundingClientRect();
+  
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  
+  canvas.style.width = `${rect.width}px`;
+  canvas.style.height = `${rect.height}px`;
+
+  ctx.scale(dpr, dpr);
+  drawFrame(currentFrame);
+}
+
+function drawFrame(index) {
+  const img = frames[index];
+  if (!img || !img.complete || !img.naturalWidth) return;
+
+  const cw = parseFloat(canvas.style.width) || window.innerWidth;
+  const ch = parseFloat(canvas.style.height) || window.innerHeight;
+  const iw = img.naturalWidth;
+  const ih = img.naturalHeight;
+
+  const imgRatio = iw / ih;
+  const canvasRatio = cw / ch;
+
+  let dw, dh, dx, dy;
+
+  if (canvasRatio > imgRatio) {
+    dw = cw;
+    dh = cw / imgRatio;
+    dx = 0;
+    dy = (ch - dh) / 2;
+  } else {
+    dw = ch * imgRatio;
+    dh = ch;
+    dx = (cw - dw) / 2;
+    dy = 0;
+  }
+
+  ctx.clearRect(0, 0, cw, ch);
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+/* --- Preloader Logic --- */
+function preloadImages() {
+  for (let i = 1; i <= config.frameCount; i++) {
+    const img = new Image();
+    img.src = config.framePath(i);
+    
+    img.onload = () => handleLoadProgress();
+    img.onerror = () => handleLoadProgress(); // skip broken frames silently
+    
+    frames.push(img);
+  }
+}
+
+function handleLoadProgress() {
+  imagesLoaded++;
+  const percentage = Math.round((imagesLoaded / config.frameCount) * 100);
+  
+  progressBar.style.width = `${percentage}%`;
+  pctText.textContent = percentage;
+
+  if (imagesLoaded === config.frameCount) {
+    initScrollAnimations();
+  }
+}
+
+/* --- ScrollTrigger Initialization --- */
+function initScrollAnimations() {
+  // Fade out preloader
+  gsap.to(loaderOverlay, {
+    opacity: 0,
+    duration: 0.8,
+    ease: "power2.out",
+    onComplete: () => loaderOverlay.classList.add("loaded")
+  });
+
+  // Initial Canvas Setup
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+
+  // Hero Canvas & Text Timeline
+  const airRender = { frame: 0 };
+  
+  const heroTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".hero-wrapper",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: config.scrubSpeed,
+      pin: ".canvas-pin-container",
+    }
+  });
+
+  // 1. First, slowly fade out the text as the user starts scrolling (takes ~15% of the scroll length)
+  heroTl.to(".hero-text-container", {
+    opacity: 0,
+    duration: 0.15,
+    ease: "power1.out"
+  });
+
+  // 2. Then, begin scrubbing the canvas animation frames (takes the remaining 85% of the scroll length)
+  heroTl.to(airRender, {
+    frame: config.frameCount - 1,
+    ease: "none",
+    duration: 0.85,
+    onUpdate: () => {
+      const frameIndex = Math.round(airRender.frame);
+      if (currentFrame !== frameIndex) {
+        currentFrame = frameIndex;
+        drawFrame(currentFrame);
+      }
+    }
+  });
+
+  // 3. Cinematic Tagline Reveal at the very end of the scrub
+  heroTl.to(".hero-finale-tagline", {
+    opacity: 1,
+    transform: "translate(-50%, -50%)",
+    duration: 0.15,
+    ease: "power1.out"
+  }, "-=0.15");
+
+  // Fade in the explore scroll indicator button at the same time
+  heroTl.to(".explore-scroll-btn", {
+    opacity: 1,
+    pointerEvents: "auto",
+    duration: 0.15,
+    ease: "power1.out"
+  }, "<");
+
+  // Reveal Animations for Page Content
+  gsap.from(".amenity-card", {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    stagger: 0.2,
+    scrollTrigger: {
+      trigger: "#amenities",
+      start: "top 80%",
+    }
+  });
+
+  gsap.from(".plan-card", {
+    y: 50,
+    opacity: 0,
+    duration: 0.8,
+    stagger: 0.2,
+    scrollTrigger: {
+      trigger: "#plans",
+      start: "top 80%",
+    }
+  });
+
+  gsap.from(".insta-item", {
+    scale: 0.9,
+    opacity: 0,
+    duration: 0.8,
+    stagger: 0.15,
+    scrollTrigger: {
+      trigger: "#community",
+      start: "top 80%",
+    }
+  });
+}
+
+// Start Everything
+window.addEventListener("DOMContentLoaded", preloadImages);
+
+/* --- WhatsApp Popup Logic --- */
+const waPopup = document.getElementById('wa-popup');
+const waCloseBtn = document.getElementById('wa-close-btn');
+
+// Show popup after 5 seconds if not closed in this session
+setTimeout(() => {
+  if (waPopup && !sessionStorage.getItem('waPopupClosed')) {
+    waPopup.classList.add('show');
+  }
+}, 5000);
+
+// Close popup on button click
+if (waCloseBtn) {
+  waCloseBtn.addEventListener('click', () => {
+    waPopup.classList.remove('show');
+    sessionStorage.setItem('waPopupClosed', 'true');
+  });
+}
+
+/* --- Mobile Menu & Accordion Logic --- */
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const navMenu = document.getElementById('nav-menu');
+const branchesItem = document.getElementById('branches-item');
+const megaMenu = document.getElementById('mega-menu');
+
+if (mobileMenuBtn && navMenu) {
+  mobileMenuBtn.addEventListener('click', () => {
+    mobileMenuBtn.classList.toggle('active');
+    navMenu.classList.toggle('mobile-active');
+  });
+}
+
+if (branchesItem && megaMenu) {
+  branchesItem.addEventListener('click', (e) => {
+    if (window.innerWidth <= 992) {
+      // Allow clicking children links in the mega menu
+      if (e.target.closest('.mega-menu-links')) return;
+      
+      e.preventDefault();
+      megaMenu.classList.toggle('accordion-open');
+    }
+  });
+}
+
+/* --- Inquiry Modal Logic --- */
+const triggerModalBtns = document.querySelectorAll('.trigger-modal');
+const inquiryModal = document.getElementById('inquiry-modal');
+const inquiryCloseBtn = document.getElementById('inquiry-close-btn');
+
+// Open modal
+triggerModalBtns.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.preventDefault();
+    inquiryModal.classList.add('active');
+  });
+});
+
+// Close modal on 'X' click
+if (inquiryCloseBtn) {
+  inquiryCloseBtn.addEventListener('click', () => {
+    inquiryModal.classList.remove('active');
+  });
+}
+
+// Close modal on outside backdrop click
+if (inquiryModal) {
+  inquiryModal.addEventListener('click', (e) => {
+    if (e.target === inquiryModal) {
+      inquiryModal.classList.remove('active');
+    }
+  });
+}
+
+/* --- Subtle Cursor Glow Logic --- */
+document.addEventListener('mousemove', (e) => {
+  document.documentElement.style.setProperty('--cursor-x', `${e.clientX}px`);
+  document.documentElement.style.setProperty('--cursor-y', `${e.clientY}px`);
+});
+
+/* --- Scroll Reveal Intersection Observer --- */
+const revealObserverOptions = {
+  root: null,
+  rootMargin: '0px 0px -50px 0px',
+  threshold: 0.15
+};
+
+const revealObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      // Unobserve to ensure animation only happens once
+      observer.unobserve(entry.target);
+    }
+  });
+}, revealObserverOptions);
+
+// Select all sections with the reveal-section class and observe them
+document.querySelectorAll('.reveal-section').forEach(section => {
+  revealObserver.observe(section);
+});
+
+/* --- Community Lightbox Modal --- */
+document.addEventListener('DOMContentLoaded', () => {
+  const lightbox = document.getElementById('media-lightbox');
+  const lightboxContent = document.getElementById('media-lightbox-content');
+  const lightboxClose = document.getElementById('media-lightbox-close');
+  const lightboxPrev = document.getElementById('media-lightbox-prev');
+  const lightboxNext = document.getElementById('media-lightbox-next');
+
+  if (lightbox && lightboxContent && lightboxClose) {
+    const mediaCards = Array.from(document.querySelectorAll('.community-card, .trigger-lightbox'));
+    let currentIndex = 0;
+    
+    const loadMedia = (index) => {
+      if (index < 0 || index >= mediaCards.length) return;
+      currentIndex = index;
+      
+      const card = mediaCards[index];
+      const type = card.getAttribute('data-media-type');
+      const src = card.getAttribute('data-media-src');
+      
+      if (type === 'video') {
+        lightboxContent.innerHTML = `<video src="${src}" autoplay controls controlsList="nofullscreen" playsinline></video>`;
+        const videoElement = lightboxContent.querySelector('video');
+        videoElement.addEventListener('ended', () => {
+          // Auto-swipe to the next media item seamlessly
+          const nextIndex = (currentIndex + 1) % mediaCards.length;
+          loadMedia(nextIndex);
+        });
+      } else if (type === 'image') {
+        lightboxContent.innerHTML = `<img src="${src}" />`;
+      }
+    };
+
+    mediaCards.forEach((card, index) => {
+      card.addEventListener('click', (e) => {
+        e.preventDefault();
+        loadMedia(index);
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    const closeLightbox = () => {
+      lightbox.classList.remove('active');
+      lightboxContent.innerHTML = '';
+      document.body.style.overflow = 'auto';
+    };
+
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    if (lightboxPrev) {
+      lightboxPrev.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const prevIndex = (currentIndex - 1 + mediaCards.length) % mediaCards.length;
+        loadMedia(prevIndex);
+      });
+    }
+
+    if (lightboxNext) {
+      lightboxNext.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const nextIndex = (currentIndex + 1) % mediaCards.length;
+        loadMedia(nextIndex);
+      });
+    }
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+  }
+});

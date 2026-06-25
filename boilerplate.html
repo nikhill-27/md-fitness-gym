@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cinematic Scroll-Triggered Animation | GSAP Canvas</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Styles -->
+  <style>
+    /* ===== Design System & Variables ===== */
+    :root {
+      --bg-color: #0a1128;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.4);
+      --glass-bg: rgba(15, 23, 42, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --font-heading: 'Syne', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ===== Preloader ===== */
+    #loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+    }
+
+    #loader-overlay.loaded {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-content {
+      width: 100%;
+      max-width: 320px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .loader-title {
+      font-family: var(--font-heading);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284c7, var(--accent));
+      box-shadow: 0 0 8px var(--accent);
+      transition: width 0.1s ease-out;
+    }
+
+    .progress-percentage {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      opacity: 0.85;
+    }
+
+    /* ===== Pinned Canvas Setup ===== */
+    .scroll-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .canvas-pin-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none; /* Let clicks pass through to content */
+    }
+
+    #animation-canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Subtle Cinematic Vignette Overlay */
+    .canvas-vignette {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at center,
+        rgba(10, 17, 40, 0.1) 0%,
+        rgba(10, 17, 40, 0.4) 60%,
+        rgba(5, 8, 20, 0.85) 100%
+      );
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* ===== Layout & Content Overlays ===== */
+    .content-overlay {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+
+    /* Navigation */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 6vw;
+      z-index: 100;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(10, 17, 40, 0.3);
+    }
+
+    .logo {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .logo span {
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--text-primary);
+    }
+
+    /* Sections */
+    section {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 10vw;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      height: 100vh;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-subtitle {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 6px;
+      color: var(--accent);
+      margin-bottom: 16px;
+      text-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2.5rem, 8vw, 6.5rem);
+      font-weight: 800;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      background: linear-gradient(180deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      opacity: 0.7;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .scroll-mouse {
+      width: 20px;
+      height: 32px;
+      border: 1.5px solid var(--text-secondary);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .scroll-mouse::before {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 6px;
+      background-color: var(--accent);
+      border-radius: 20%;
+      animation: scrollWheel 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scrollWheel {
+      0% { top: 6px; opacity: 1; }
+      50% { top: 16px; opacity: 0; }
+      100% { top: 6px; opacity: 1; }
+    }
+
+    /* Narrative / Story Card Sections */
+    .narrative-section {
+      justify-content: flex-start;
+      padding-top: 25vh;
+      padding-bottom: 25vh;
+    }
+
+    .narrative-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      padding: 48px;
+      border-radius: 20px;
+      max-width: 500px;
+      opacity: 0;
+      transform: translateY(40px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-num {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .narrative-card h2 {
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .narrative-card p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    /* End Section */
+    .outro-section {
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .outro-content {
+      max-width: 600px;
+      z-index: 5;
+    }
+
+    .outro-title {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      font-weight: 800;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+    }
+
+    .btn-cta {
+      display: inline-block;
+      padding: 16px 36px;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #ffffff;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .btn-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(2, 132, 199, 0.6);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .narrative-card {
+        padding: 32px;
+        max-width: 100%;
+      }
+      header {
+        padding: 20px 4vw;
+      }
+      .nav-links {
+        display: none; /* Simplify on mobile */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Preloader Screen -->
+  <div id="loader-overlay">
+    <div class="loader-content">
+      <div class="loader-title">Preloading Assets</div>
+      <div class="progress-bar-container">
+        <div id="progress-bar"></div>
+      </div>
+      <div class="progress-percentage"><span id="pct-text">0</span>%</div>
+    </div>
+  </div>
+
+  <!-- Canvas Pinned Container -->
+  <div class="canvas-pin-container">
+    <div class="canvas-vignette"></div>
+    <canvas id="animation-canvas"></canvas>
+  </div>
+
+  <!-- Content Overlay -->
+  <div class="content-overlay">
+    
+    <!-- Minimalist Navigation -->
+    <header>
+      <div class="logo">KINETIC<span>.</span></div>
+      <ul class="nav-links">
+        <li><a href="#hero" class="active">Experience</a></li>
+        <li><a href="#section-1">Form</a></li>
+        <li><a href="#section-2">Motion</a></li>
+        <li><a href="#section-3">Shakti</a></li>
+      </ul>
+    </header>
+
+    <!-- Scrollable Area -->
+    <div class="scroll-container">
+      
+      <!-- 1. Hero / Intro Section -->
+      <section class="hero-section" id="hero">
+        <div>
+          <div class="hero-subtitle">Interactive 3D Render</div>
+          <h1 class="hero-title">Shakti In<br>Motion</h1>
+        </div>
+        <div class="scroll-indicator">
+          <span>Scroll to rotate</span>
+          <div class="scroll-mouse"></div>
+        </div>
+      </section>
+
+      <!-- 2. Narrative Section 01 -->
+      <section class="narrative-section" id="section-1">
+        <div class="narrative-card" id="card-1">
+          <span class="card-num">01 / CONCEPT</span>
+          <h2>The Primal Form</h2>
+          <p>Every masterpiece begins as raw substance. By scrubbing through the frames, we trace the contours of a classic marble statue captured in pristine digital high fidelity, expressing strength and grace in equal measure.</p>
+        </div>
+      </section>
+
+      <!-- 3. Narrative Section 02 -->
+      <section class="narrative-section" id="section-2" style="align-items: flex-end;">
+        <div class="narrative-card" id="card-2">
+          <span class="card-num">02 / INTERACTION</span>
+          <h2>Liquid Geometry</h2>
+          <p>As you scroll, notice the cinematic weight of the transition. The frame-to-frame scrub is governed by a smooth-lag interpolator, allowing the statue to rotate with a satisfying, organic momentum.</p>
+        </div>
+      </section>
+
+      <!-- 4. Narrative Section 03 -->
+      <section class="narrative-section" id="section-3">
+        <div class="narrative-card" id="card-3">
+          <span class="card-num">03 / THE SHAKTI</span>
+          <h2>Ignite The Core</h2>
+          <p>Dynamic lighting traces the marble muscles, casting dramatic shadows. This high-performance boilerplate ensures pixel-perfect proportions regardless of your screen size or aspect ratio.</p>
+        </div>
+      </section>
+
+      <!-- 5. Outro / Call To Action Section -->
+      <section class="outro-section" id="outro">
+        <div class="outro-content">
+          <h2 class="outro-title">Experience Completed</h2>
+          <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 1.05rem;">
+            Ready to integrate this lightweight, high-performance scroll sequence into your primary production website?
+          </p>
+          <a href="#" class="btn-cta">Explore Integration</a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ===== GSAP & ScrollTrigger CDNs ===== -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Canvas Sequence Engine -->
+  <script>
+    // Register ScrollTrigger plugin
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ==========================================
+    // CONFIGURATION SECTION
+    // ==========================================
+    const config = {
+      // Total exported image frames in sequence
+      frameCount: 173,
+      
+      // Function returning the path to each frame based on its 1-indexed count
+      framePath: (index) => `./frames/frame_${String(index).padStart(3, '0')}.jpg`,
+      
+      // Virtual scroll length: higher = slower rotation scrub, lower = faster rotation
+      scrollLength: "450vh",
+      
+      // Fluid scroll-lag (higher values = heavier feeling, cinematic delay)
+      scrubSpeed: 0.8
+    };
+
+    // DOM References
+    const canvas = document.getElementById("animation-canvas");
+    const ctx = canvas.getContext("2d");
+    const loaderOverlay = document.getElementById("loader-overlay");
+    const progressBar = document.getElementById("progress-bar");
+    const pctText = document.getElementById("pct-text");
+    const scrollContainer = document.querySelector(".scroll-container");
+
+    // Sequence Variables
+    const frames = [];
+    let currentFrame = 0;
+    let imagesLoaded = 0;
+
+    // Apply the configured scroll length to our container
+    scrollContainer.style.height = config.scrollLength;
+
+    // Cover scale utility (similar to CSS background-size: cover)
+    function drawFrame(index) {
+      const img = frames[index];
+      if (!img || !img.complete || !img.naturalWidth) return;
+
+      const cw = window.innerWidth;
+      const ch = window.innerHeight;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+
+      const imgRatio = iw / ih;
+      const canvasRatio = cw / ch;
+
+      let dw, dh, dx, dy;
+
+      if (canvasRatio > imgRatio) {
+        dw = cw;
+        dh = cw / imgRatio;
+        dx = 0;
+        dy = (ch - dh) / 2;
+      } else {
+        dw = ch * imgRatio;
+        dh = ch;
+        dx = (cw - dw) / 2;
+        dy = 0;
+      }
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }
+
+    // Handles scaling for retina/high-DPI screens
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.scale(dpr, dpr);
+      drawFrame(currentFrame);
+    }
+
+    // Preload Sequence Images
+    function preloadImages() {
+      for (let i = 1; i <= config.frameCount; i++) {
+        const img = new Image();
+        img.src = config.framePath(i);
+        
+        img.onload = () => handleImageLoad();
+        img.onerror = () => handleImageError(img.src);
+        
+        frames.push(img);
+      }
+    }
+
+    // Tracks overall loading progress
+    function handleImageLoad() {
+      imagesLoaded++;
+      const percentage = Math.round((imagesLoaded / config.frameCount) * 100);
+      
+      // Update UI loaders
+      progressBar.style.width = `${percentage}%`;
+      pctText.textContent = percentage;
+
+      if (imagesLoaded === config.frameCount) {
+        initializeScrollAnimation();
+      }
+    }
+
+    function handleImageError(src) {
+      console.warn(`Failed to load image frame at path: ${src}`);
+      // Continue anyway to avoid locking the loader screen
+      handleImageLoad();
+    }
+
+    // Initialize ScrollTrigger and GSAP Tweens
+    function initializeScrollAnimation() {
+      // Hide loader with a premium fade effect
+      gsap.to(loaderOverlay, {
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        onComplete: () => {
+          loaderOverlay.classList.add("loaded");
+        }
+      });
+
+      // Initial redraw and resize listen
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas, { passive: true });
+
+      // Frame scrubbing animation proxy
+      const airRender = { frame: 0 };
+
+      // Tween the frame index smoothly using GSAP scrub
+      gsap.to(airRender, {
+        frame: config.frameCount - 1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".scroll-container",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: config.scrubSpeed,
+          onUpdate: () => {
+            const frameIndex = Math.round(airRender.frame);
+            if (currentFrame !== frameIndex) {
+              currentFrame = frameIndex;
+              drawFrame(currentFrame);
+            }
+          }
+        }
+      });
+
+      // --- Overlay Text Animations (Transitions during scrolling) ---
+
+      // Fade out hero text
+      gsap.to(".hero-section > div", {
+        opacity: 0,
+        y: -50,
+        scrollTrigger: {
+          trigger: ".hero-section",
+          start: "top top",
+          end: "bottom 40%",
+          scrub: true
+        }
+      });
+
+      // Animate Card 1
+      gsap.to("#card-1", {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: "#section-1",
+          start: "top 75%",
+          end: "center 50%",
+          scrub: true,
+          toggleActions: "play reverse play reverse"
+        }
+      });
+      gsap.to("#card-1", {
+        opacity: 0,
+        y: -30,
+        scrollTrigger: {
+          trigger: "#section-1",
+          start: "center 30%",
+          end: "bottom 10%",
+          scrub: true
+        }
+      });
+
+      // Animate Card 2
+      gsap.to("#card-2", {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: "#section-2",
+          start: "top 75%",
+          end: "center 50%",
+          scrub: true,
+          toggleActions: "play reverse play reverse"
+        }
+      });
+      gsap.to("#card-2", {
+        opacity: 0,
+        y: -30,
+        scrollTrigger: {
+          trigger: "#section-2",
+          start: "center 30%",
+          end: "bottom 10%",
+          scrub: true
+        }
+      });
+
+      // Animate Card 3
+      gsap.to("#card-3", {
+        opacity: 1,
+        y: 0,
+        scrollTrigger: {
+          trigger: "#section-3",
+          start: "top 75%",
+          end: "center 50%",
+          scrub: true,
+          toggleActions: "play reverse play reverse"
+        }
+      });
+      gsap.to("#card-3", {
+        opacity: 0,
+        y: -30,
+        scrollTrigger: {
+          trigger: "#section-3",
+          start: "center 30%",
+          end: "bottom 10%",
+          scrub: true
+        }
+      });
+
+      // Fade in Outro Content
+      gsap.fromTo(".outro-content", 
+        { opacity: 0, y: 50 },
+        { 
+          opacity: 1, 
+          y: 0,
+          scrollTrigger: {
+            trigger: "#outro",
+            start: "top 80%",
+            end: "center 60%",
+            scrub: true
+          }
+        }
+      );
+    }
+
+    // Start loading sequence on DOMContentLoaded
+    window.addEventListener("DOMContentLoaded", preloadImages);
+  </script>
+</body>
+</html>
