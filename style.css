@@ -1841,3 +1841,78 @@ h1, h2, h3, h4 {
   font-size: 1.4rem;
   animation: shakeIcon 2s ease-in-out infinite;
 }
+
+/* =========================================================================
+   COMPREHENSIVE MOBILE OPTIMIZATION OVERRIDES
+   ========================================================================= */
+@media (max-width: 768px) {
+  /* 1. Hero Canvas Optimization */
+  .canvas-pin-container,
+  #animation-canvas {
+    width: 100% !important;
+    height: 60vh !important;
+    object-fit: contain !important;
+  }
+  .hero-wrapper {
+    height: auto !important;
+    min-height: 60vh !important;
+  }
+  
+  /* 2. Grid & Flexbox Collapsing */
+  .plans-grid,
+  .compact-amenities-grid,
+  .services-grid,
+  .footer-main-grid,
+  .success-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  
+  .nav-links,
+  .footer-bottom-bar {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 1rem !important;
+  }
+
+  .footer-brand-col,
+  .footer-links-col,
+  .footer-location-col,
+  .footer-contact-col {
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  /* 3. Typography Scaling */
+  .hero-title {
+    font-size: clamp(2rem, 8vw, 3rem) !important;
+  }
+  .section-title,
+  .plans-title,
+  .services-title,
+  .success-title {
+    font-size: clamp(2rem, 8vw, 2.5rem) !important;
+  }
+  .footer-watermark,
+  .hero-finale-tagline {
+    font-size: clamp(3rem, 12vw, 5rem) !important;
+    white-space: normal !important;
+    line-height: 1.1 !important;
+    word-break: break-word !important;
+  }
+
+  /* 4. Padding & Margins */
+  .section-padding {
+    padding: 4rem 1.5rem !important;
+  }
+  .hero-text-container {
+    padding: 0 1.5rem !important;
+  }
+  
+  /* Reset complex Bento box span rules */
+  .compact-amenity-card {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+}
