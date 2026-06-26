@@ -2048,7 +2048,7 @@ dialog#gallery-modal::backdrop {
 
   /* 6. STRICT FINAL MOBILE OVERRIDES */
   /* Fix 1: Hero Section (Full Viewport Zoom & GSAP Fix) */
-  .hero-wrapper,
+  .canvas-pin-container,
   #animation-canvas {
     width: 100vw !important;
     height: 100dvh !important;
@@ -2094,7 +2094,15 @@ dialog#gallery-modal::backdrop {
     flex-wrap: nowrap !important;
     width: max-content !important;
     gap: 15px !important;
-    animation: forceMobileMarquee 15s linear infinite !important;
+    animation-name: forceMobileMarquee !important;
+    animation-duration: 15s !important;
+    animation-timing-function: linear !important;
+    animation-iteration-count: infinite !important;
+    animation-play-state: running !important;
+  }
+  .marquee-track:hover,
+  .marquee-track:active {
+    animation-play-state: running !important;
   }
 }
 
