@@ -2040,14 +2040,7 @@ dialog#gallery-modal::backdrop {
     backface-visibility: hidden !important;
   }
   
-  @keyframes autoScroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
 
-  .marquee-track {
-    animation: autoScroll 20s linear infinite !important;
-  }
 
   .community-card {
     pointer-events: none !important;
@@ -2103,8 +2096,9 @@ dialog#gallery-modal::backdrop {
     gap: 15px !important;
     animation: forceMobileMarquee 15s linear infinite !important;
   }
-  @keyframes forceMobileMarquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+}
+
+@keyframes forceMobileMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }

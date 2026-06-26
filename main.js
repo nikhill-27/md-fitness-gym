@@ -153,68 +153,51 @@ function initScrollAnimations() {
   }, (context) => {
     let { isDesktop, isMobile } = context.conditions;
 
-    if (isDesktop) {
-      // Desktop Hero Canvas Animation
-      const airRender = { frame: 0 };
-      
-      const heroTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".hero-wrapper",
-          start: "top top",
-          end: "bottom bottom",
-          scrub: config.scrubSpeed,
-          pin: ".canvas-pin-container",
+    // Desktop and Mobile Hero Canvas Animation
+    const airRender = { frame: 0 };
+    
+    const heroTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".hero-wrapper",
+        start: "top top",
+        end: "+=400%",
+        scrub: config.scrubSpeed,
+        pin: ".canvas-pin-container",
+      }
+    });
+
+    heroTl.to(".hero-text-container", {
+      opacity: 0,
+      duration: 0.15,
+      ease: "power1.out"
+    });
+
+    heroTl.to(airRender, {
+      frame: config.frameCount - 1,
+      ease: "none",
+      duration: 0.85,
+      onUpdate: () => {
+        const frameIndex = Math.round(airRender.frame);
+        if (currentFrame !== frameIndex) {
+          currentFrame = frameIndex;
+          drawFrame(currentFrame);
         }
-      });
+      }
+    });
 
-      heroTl.to(".hero-text-container", {
-        opacity: 0,
-        duration: 0.15,
-        ease: "power1.out"
-      });
+    heroTl.to(".hero-finale-tagline", {
+      opacity: 1,
+      transform: "translate(-50%, -50%)",
+      duration: 0.15,
+      ease: "power1.out"
+    }, "-=0.15");
 
-      heroTl.to(airRender, {
-        frame: config.frameCount - 1,
-        ease: "none",
-        duration: 0.85,
-        onUpdate: () => {
-          const frameIndex = Math.round(airRender.frame);
-          if (currentFrame !== frameIndex) {
-            currentFrame = frameIndex;
-            drawFrame(currentFrame);
-          }
-        }
-      });
-
-      heroTl.to(".hero-finale-tagline", {
-        opacity: 1,
-        transform: "translate(-50%, -50%)",
-        duration: 0.15,
-        ease: "power1.out"
-      }, "-=0.15");
-
-      heroTl.to(".explore-scroll-btn", {
-        opacity: 1,
-        pointerEvents: "auto",
-        duration: 0.15,
-        ease: "power1.out"
-      }, "<");
-    }
-
-    if (isMobile) {
-      // Mobile Hero Animation
-      gsap.from(".hero-text-container", {
-        y: 30,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".hero-wrapper",
-          start: "top 80%",
-        }
-      });
-      // Removed normalizeScroll to allow native pull-to-refresh
-    }
+    heroTl.to(".explore-scroll-btn", {
+      opacity: 1,
+      pointerEvents: "auto",
+      duration: 0.15,
+      ease: "power1.out"
+    }, "<");
     
     // On mobile, trigger later (top 90%) to ensure it's fully on screen before animating
     const triggerStart = isMobile ? "top 90%" : "top 80%";
