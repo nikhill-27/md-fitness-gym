@@ -1,4 +1,5 @@
 gsap.registerPlugin(ScrollTrigger);
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 /* --- Navbar Scroll Effect --- */
 const navbar = document.getElementById('navbar');
@@ -164,8 +165,8 @@ function initScrollAnimations() {
       scrollTrigger: {
         trigger: ".hero-wrapper",
         start: "top top",
-        end: "+=400%",
-        scrub: config.scrubSpeed,
+        end: isMobile ? "+=250%" : "+=400%",
+        scrub: isMobile ? 0.1 : config.scrubSpeed,
         pin: ".canvas-pin-container",
       }
     });

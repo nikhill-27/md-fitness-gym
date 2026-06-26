@@ -2134,6 +2134,7 @@ dialog#gallery-modal::backdrop {
     height: 100dvh !important;
     object-fit: cover !important;
     display: block !important;
+    will-change: transform !important;
   }
   
   .hero-wrapper {
