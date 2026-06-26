@@ -2042,9 +2042,6 @@ dialog#gallery-modal::backdrop {
   
 
 
-  .community-card {
-    pointer-events: none !important;
-  }
 
   /* 6. STRICT FINAL MOBILE OVERRIDES */
   /* Fix 1: Hero Section (Full Viewport Zoom & GSAP Fix) */
@@ -2084,7 +2081,7 @@ dialog#gallery-modal::backdrop {
     transform: translateX(-50%) !important;
   }
 
-  /* Fix 3: Gallery Marquee (Force Infinite) */
+  /* Fix 3: Gallery Native Scroll (Swipe to Explore) */
   .marquee-wrapper {
     overflow-x: hidden !important;
     width: 100vw !important;
@@ -2092,21 +2089,24 @@ dialog#gallery-modal::backdrop {
   .marquee-track {
     display: flex !important;
     flex-wrap: nowrap !important;
-    width: max-content !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
     gap: 15px !important;
-    animation-name: forceMobileMarquee !important;
-    animation-duration: 15s !important;
-    animation-timing-function: linear !important;
-    animation-iteration-count: infinite !important;
-    animation-play-state: running !important;
+    padding-bottom: 10px !important;
+    width: 100vw !important;
+    scroll-behavior: smooth !important;
+    animation: none !important;
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
   }
-  .marquee-track:hover,
-  .marquee-track:active {
-    animation-play-state: running !important;
+  .marquee-track::-webkit-scrollbar {
+    display: none !important;
   }
-}
-
-@keyframes forceMobileMarquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  .marquee-track .community-card {
+    scroll-snap-align: center !important;
+    flex: 0 0 80% !important;
+    max-width: 300px !important;
+    pointer-events: auto !important;
+  }
 }
