@@ -455,3 +455,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+/* --- Mobile GSAP Resize Fix --- */
+window.addEventListener('resize', () => {
+  if (typeof ScrollTrigger !== 'undefined') {
+    ScrollTrigger.refresh();
+  }
+});

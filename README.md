@@ -4,8 +4,8 @@ High-performance, dependency-free landing page for **MD Fitness Gym**, Meerut.
 Features a scroll-driven canvas frame-sequence hero on desktop, highly optimized mobile layouts, neon-blue/black/silver branding, and "Ignite The Shakti Within" theme.
 
 ## Recent Optimizations
-- **Mobile Performance:** Strict GPU acceleration (transform: translateZ) for gallery and hero elements, resulting in a buttery smooth experience without scrolling lag.
-- **Strict Layout Fixes:** Added aggressive mobile-only `@media (max-width: 768px)` CSS overrides to fix GSAP ScrollTrigger viewport dimensions, restructure the 2x2 Pricing grid to a strict single-column flex layout, and enforce infinite auto-scrolling on the gallery marquee without breaking desktop styles.
+- **GSAP Mobile Viewport Fix:** Switched to Dynamic Viewport Height (`100dvh`) and absolute/relative pinning rules for the Hero canvas, combined with a `resize` listener in `main.js` to ensure GSAP ScrollTrigger accurately recalculates math despite mobile URL bar resizing.
+- **Strict Layout Fixes:** Added aggressive mobile-only `@media (max-width: 768px)` CSS overrides to restructure the Pricing grid to a strict single-column flex layout (fixing overlap), and enforce infinite auto-scrolling on the gallery marquee without breaking desktop styles.
 - **Responsive Architecture:** Auto-scrolling marquees and dedicated native HTML `<dialog>` modals implemented for bug-free, script-light mobile viewing. 
 - **Modular Codebase:** Separated HTML, CSS, and JS for better maintainability and cleaner code structure.
 
