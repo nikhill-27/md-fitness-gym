@@ -5,6 +5,7 @@ Features a scroll-driven canvas frame-sequence hero on desktop, highly optimized
 
 ## Recent Optimizations
 - **Mobile Performance:** Strict GPU acceleration (transform: translateZ) for gallery and hero elements, resulting in a buttery smooth experience without scrolling lag.
+- **Strict Layout Fixes:** Added aggressive mobile-only `@media (max-width: 768px)` CSS overrides to fix GSAP ScrollTrigger viewport dimensions, restructure the 2x2 Pricing grid to a strict single-column flex layout, and enforce infinite auto-scrolling on the gallery marquee without breaking desktop styles.
 - **Responsive Architecture:** Auto-scrolling marquees and dedicated native HTML `<dialog>` modals implemented for bug-free, script-light mobile viewing. 
 - **Modular Codebase:** Separated HTML, CSS, and JS for better maintainability and cleaner code structure.
 

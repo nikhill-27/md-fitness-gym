@@ -2052,4 +2052,51 @@ dialog#gallery-modal::backdrop {
   .community-card {
     pointer-events: none !important;
   }
+
+  /* 6. STRICT FINAL MOBILE OVERRIDES */
+  /* Fix 1: Hero Section (Full Viewport Zoom & GSAP Fix) */
+  #animation-canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    object-fit: cover !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+
+  /* Fix 2: Pricing Cards Grid */
+  .plans-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    width: 100% !important;
+    padding: 0 15px !important;
+  }
+  .plan-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .top-edge-badge {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  /* Fix 3: Gallery Marquee */
+  .marquee-wrapper {
+    overflow: hidden !important;
+    width: 100vw !important;
+  }
+  .marquee-track {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: max-content !important;
+    gap: 15px !important;
+    animation: mobileMarquee 20s linear infinite !important;
+  }
+  @keyframes mobileMarquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 }
