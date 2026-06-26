@@ -20,6 +20,7 @@
 }
 
 html {
+  overscroll-behavior-y: auto;
 }
 
 body {
@@ -27,6 +28,7 @@ body {
   color: var(--text-main);
   font-family: var(--font-body);
   overflow-x: hidden;
+  overscroll-behavior-y: auto;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -832,6 +834,31 @@ h1, h2, h3, h4 {
   text-decoration: none;
   cursor: pointer;
 }
+
+/* ===== Gallery Modal ===== */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 20px;
+}
+.gallery-grid img, .gallery-grid video {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+.gallery-grid img:active, .gallery-grid video:active {
+  transform: scale(1.05);
+  z-index: 10;
+  position: relative;
+}
+dialog#gallery-modal::backdrop {
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
 .community-img {
   width: 100%;
   height: 100%;
@@ -945,6 +972,21 @@ h1, h2, h3, h4 {
   inset: 0;
   background: linear-gradient(to top, rgba(5,5,5,0.8) 0%, transparent 50%);
   pointer-events: none;
+}
+.victory-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  animation: victorySlide 8s ease-in-out infinite;
+}
+.victory-track .success-img {
+  width: 50% !important;
+  flex-shrink: 0;
+}
+@keyframes victorySlide {
+  0%, 40% { transform: translateX(0); } /* Show Photo */
+  50%, 90% { transform: translateX(-50%); } /* Show Video */
+  100% { transform: translateX(0); } /* Slide back */
 }
 .success-img {
   width: 100%;
@@ -1870,7 +1912,20 @@ h1, h2, h3, h4 {
   }
   
   /* 2. Grid & Flexbox Collapsing */
-  .plans-grid,
+  .amenities-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    align-items: center !important;
+  }
+  
+  .plans-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    padding: 0 10px !important;
+  }
+
   .compact-amenities-grid,
   .services-grid,
   .footer-main-grid,
@@ -1880,8 +1935,32 @@ h1, h2, h3, h4 {
     gap: 1rem !important;
   }
   
+  .amenity-card {
+    width: 100% !important;
+    margin: 0 !important;
+    height: auto !important;
+  }
+
+  .plan-card {
+    width: 100% !important;
+    height: auto !important;
+    padding: 15px !important;
+  }
+
+  .plan-card .plan-name { font-size: 1.2rem !important; margin-bottom: 5px !important; }
+  .plan-card .plan-price { font-size: 1.1rem !important; margin-bottom: 5px !important; }
+  .plan-card .top-edge-badge { font-size: 9px !important; padding: 4px 8px !important; }
+  .plan-card .plan-eyebrow { font-size: 0.6rem !important; margin-bottom: 3px !important; }
+  .plan-card .plan-duration { font-size: 0.75rem !important; padding: 4px 8px !important; margin-bottom: 10px !important; }
+  .plan-card .plan-features { margin-bottom: 15px !important; }
+  .plan-card .plan-features li { font-size: 0.75rem !important; margin-bottom: 6px !important; line-height: 1.2 !important; }
+  .plan-card .plan-features li svg { width: 14px !important; height: 14px !important; margin-right: 6px !important; }
+  .plan-card .plan-cta { font-size: 0.75rem !important; padding: 8px !important; }
+  .plan-card .student-badge { font-size: 8px !important; padding: 8px !important; margin-top: 3px !important; }
+  .plan-card .monthly-breakdown { font-size: 10px !important; }
+  .plan-card .secondary-btn { font-size: 0.8rem !important; padding: 8px !important; margin-top: 8px !important; margin-bottom: 8px !important; }
+
   .service-card,
-  .plan-card,
   .compact-amenity-card {
     width: 100% !important;
     height: auto !important;
@@ -1899,6 +1978,8 @@ h1, h2, h3, h4 {
   .footer-links-col,
   .footer-location-col,
   .footer-contact-col {
+    display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
   }
@@ -1913,12 +1994,18 @@ h1, h2, h3, h4 {
   .success-title {
     font-size: clamp(2rem, 8vw, 2.5rem) !important;
   }
-  .footer-watermark,
   .hero-finale-tagline {
     font-size: clamp(3rem, 12vw, 5rem) !important;
     white-space: normal !important;
     line-height: 1.1 !important;
     word-break: break-word !important;
+  }
+
+  .footer-watermark {
+    display: block !important;
+    font-size: 14vw !important;
+    opacity: 0.05 !important;
+    white-space: nowrap !important;
   }
 
   /* 4. Padding, Margins, & Content Visibility */
@@ -1928,10 +2015,14 @@ h1, h2, h3, h4 {
     contain-intrinsic-size: 1px 1000px;
   }
   .hero-text-container {
-    padding: 0 1.5rem !important;
+    padding: 100px 1.5rem 0 1.5rem !important;
   }
-  .service-card, .plan-card, .compact-amenity-card {
-    padding: 1.5rem !important;
+  .service-card, .compact-amenity-card {
+    padding: 1.25rem !important;
+  }
+  .service-card .service-desc {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
   }
   
   /* Reset complex Bento box span rules */
@@ -1944,13 +2035,21 @@ h1, h2, h3, h4 {
   .marquee-wrapper,
   .marquee-track,
   .community-img {
-    transform: translate3d(0, 0, 0) !important;
+    transform: translateZ(0) !important;
+    will-change: transform !important;
     backface-visibility: hidden !important;
-    perspective: 1000px !important;
   }
   
+  @keyframes autoScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
   .marquee-track {
-    will-change: transform !important;
-    animation-duration: 45s !important; /* Slightly slower on mobile for performance */
+    animation: autoScroll 20s linear infinite !important;
+  }
+
+  .community-card {
+    pointer-events: none !important;
   }
 }

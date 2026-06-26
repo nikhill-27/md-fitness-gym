@@ -146,62 +146,74 @@ function initScrollAnimations() {
   // GSAP MatchMedia for Responsive Triggers
   let mm = gsap.matchMedia();
 
-  // Desktop & Mobile Hero Canvas Animation (Shared)
-  const airRender = { frame: 0 };
-  
-  const heroTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: ".hero-wrapper",
-      start: "top top",
-      end: "bottom bottom",
-      scrub: config.scrubSpeed,
-      pin: ".canvas-pin-container",
-    }
-  });
-
-  heroTl.to(".hero-text-container", {
-    opacity: 0,
-    duration: 0.15,
-    ease: "power1.out"
-  });
-
-  heroTl.to(airRender, {
-    frame: config.frameCount - 1,
-    ease: "none",
-    duration: 0.85,
-    onUpdate: () => {
-      const frameIndex = Math.round(airRender.frame);
-      if (currentFrame !== frameIndex) {
-        currentFrame = frameIndex;
-        drawFrame(currentFrame);
-      }
-    }
-  });
-
-  heroTl.to(".hero-finale-tagline", {
-    opacity: 1,
-    transform: "translate(-50%, -50%)",
-    duration: 0.15,
-    ease: "power1.out"
-  }, "-=0.15");
-
-  heroTl.to(".explore-scroll-btn", {
-    opacity: 1,
-    pointerEvents: "auto",
-    duration: 0.15,
-    ease: "power1.out"
-  }, "<");
-
   // Responsive Reveal Animations
   mm.add({
     isDesktop: "(min-width: 769px)",
     isMobile: "(max-width: 768px)"
   }, (context) => {
-    let { isMobile } = context.conditions;
-    
-    // Normalize scroll on mobile to prevent address-bar jitter during pins
+    let { isDesktop, isMobile } = context.conditions;
+
+    if (isDesktop) {
+      // Desktop Hero Canvas Animation
+      const airRender = { frame: 0 };
+      
+      const heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".hero-wrapper",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: config.scrubSpeed,
+          pin: ".canvas-pin-container",
+        }
+      });
+
+      heroTl.to(".hero-text-container", {
+        opacity: 0,
+        duration: 0.15,
+        ease: "power1.out"
+      });
+
+      heroTl.to(airRender, {
+        frame: config.frameCount - 1,
+        ease: "none",
+        duration: 0.85,
+        onUpdate: () => {
+          const frameIndex = Math.round(airRender.frame);
+          if (currentFrame !== frameIndex) {
+            currentFrame = frameIndex;
+            drawFrame(currentFrame);
+          }
+        }
+      });
+
+      heroTl.to(".hero-finale-tagline", {
+        opacity: 1,
+        transform: "translate(-50%, -50%)",
+        duration: 0.15,
+        ease: "power1.out"
+      }, "-=0.15");
+
+      heroTl.to(".explore-scroll-btn", {
+        opacity: 1,
+        pointerEvents: "auto",
+        duration: 0.15,
+        ease: "power1.out"
+      }, "<");
+    }
+
     if (isMobile) {
-      ScrollTrigger.normalizeScroll(true);
+      // Mobile Hero Animation
+      gsap.from(".hero-text-container", {
+        y: 30,
+        opacity: 0,
+        duration: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".hero-wrapper",
+          start: "top 80%",
+        }
+      });
+      // Removed normalizeScroll to allow native pull-to-refresh
     }
     
     // On mobile, trigger later (top 90%) to ensure it's fully on screen before animating
@@ -419,6 +431,27 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === lightbox) {
         closeLightbox();
       }
+    });
+  }
+
+  /* --- Gallery View All Logic --- */
+  const viewAllBtn = document.getElementById('view-all-gallery-btn');
+  const galleryModal = document.getElementById('gallery-modal');
+  const closeGalleryBtn = document.getElementById('close-gallery-btn');
+
+  if (viewAllBtn && galleryModal) {
+    viewAllBtn.addEventListener('click', () => {
+      galleryModal.showModal();
+    });
+  }
+  if (closeGalleryBtn && galleryModal) {
+    closeGalleryBtn.addEventListener('click', () => {
+      galleryModal.close();
+    });
+  }
+  if (galleryModal) {
+    galleryModal.addEventListener('click', (e) => {
+      if (e.target === galleryModal) galleryModal.close();
     });
   }
 });

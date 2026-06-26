@@ -251,7 +251,11 @@
         <!-- Service 3 -->
         <div class="service-card trigger-lightbox" data-media-type="video" data-media-src="./assets/voices of victory/Came back 💪💪💪💪#gymrat #gymlife #fitnessmotivation #gymmotivation #gymlifestyle #gym #gymaddi.mp4" style="cursor: pointer;">
           <div class="service-icon">
-            <video src="./assets/voices of victory/Came back 💪💪💪💪#gymrat #gymlife #fitnessmotivation #gymmotivation #gymlifestyle #gym #gymaddi.mp4" autoplay loop muted playsinline style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,85,255,0.3);"></video>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"></path>
+              <circle cx="6" cy="18" r="3"></circle>
+              <circle cx="18" cy="16" r="3"></circle>
+            </svg>
           </div>
           <h3 class="service-title">ZUMBA & BHANGRA</h3>
           <p class="service-desc">Burn calories and build stamina in our high-energy, rhythm-based studio sessions. Express yourself with dynamic choreography led by professional instructors.</p>
@@ -448,7 +452,8 @@
         </div>
       </div>
 
-      <div class="community-cta-wrapper" style="text-align: center;">
+      <div class="community-cta-wrapper" style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+        <button id="view-all-gallery-btn" class="secondary-btn" style="width: auto;">View All</button>
         <a href="https://www.instagram.com/mdfitness.meerut/" target="_blank" class="btn-instagram">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round">
@@ -459,6 +464,21 @@
           Follow Us @mdfitness.meerut
         </a>
       </div>
+      
+      <!-- Native Gallery Dialog -->
+      <dialog id="gallery-modal" style="border: none; border-radius: 12px; background: rgba(10,10,10,0.95); max-width: 90vw; width: 600px; max-height: 80vh; overflow-y: auto; color: white; margin: auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; background: rgba(10,10,10,0.95); z-index: 20;">
+          <h3 style="font-family: var(--font-heading); margin: 0; letter-spacing: 1px;">OUR GALLERY</h3>
+          <button id="close-gallery-btn" style="background: transparent; color: white; font-size: 2rem; line-height: 1; border: none; cursor: pointer;">&times;</button>
+        </div>
+        <div class="gallery-grid">
+          <video src="assets/insta-material/IMG_0050.mov" autoplay loop muted playsinline></video>
+          <img src="assets/insta-material/screenshot1.png" loading="lazy">
+          <video src="assets/insta-material/IMG_0122.mov" autoplay loop muted playsinline></video>
+          <img src="assets/insta-material/screenshot2.png" loading="lazy">
+          <video src="assets/AQMqAg4fv9GELEt3_TutBNc69_XLR4RxmJWKMwePN3dnEIG99WYfOmJt73sfJ3gTirlDz80Pp-1U82GKY8uA_0BZn03x-gyz.mp4" autoplay loop muted playsinline></video>
+        </div>
+      </dialog>
     </section>
 
     <!-- Success Stories (Transformation Showcase) -->
@@ -473,9 +493,11 @@
       </div>
 
       <div class="success-grid">
-        <div class="success-visual trigger-lightbox" data-media-type="video" data-media-src="./assets/voices of victory/Came back 💪💪💪💪#gymrat #gymlife #fitnessmotivation #gymmotivation #gymlifestyle #gym #gymaddi.mp4" style="cursor: pointer;">
-          <img src="./assets/voices of victory/Screenshot 2026-06-26 at 12.12.14 AM.png"
-            alt="Transformation Success" class="success-img">
+        <div class="success-visual" style="pointer-events: none;">
+          <div class="victory-track">
+            <img src="./assets/voices of victory/Screenshot 2026-06-26 at 12.12.14 AM.png" alt="Transformation Success" class="success-img">
+            <video src="./assets/voices of victory/Came back 💪💪💪💪#gymrat #gymlife #fitnessmotivation #gymmotivation #gymlifestyle #gym #gymaddi.mp4" autoplay loop muted playsinline class="success-img" style="width: 50%;"></video>
+          </div>
           <div class="success-badge">Featured Transformation</div>
         </div>
 
