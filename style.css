@@ -391,33 +391,21 @@ h1, h2, h3, h4 {
 
 /* ===== Plans Section ===== */
 .plans-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-@media (min-width: 768px) {
-  .plans-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (min-width: 992px) {
-  .plans-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 2rem; 
+  max-width: 1200px; 
+  margin: 0 auto; 
+  align-items: start;
 }
 .plan-card {
   background: #0d0d0d;
-  border: 1px solid #222;
-  padding: 2.5rem 2rem;
-  border-radius: 4px;
-  text-align: left;
-  transition: all 0.3s ease-in-out;
-  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  opacity: 1 !important;
-  visibility: visible !important;
+  position: relative;
 }
 .plan-card:hover {
   transform: scale(1.03);
@@ -529,12 +517,13 @@ h1, h2, h3, h4 {
 
 .plan-price {
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
   color: #fff;
   margin-bottom: 10px;
   display: flex;
-  align-items: center;
-  animation: electricPulseGlow 3s ease-in-out infinite;
+  align-items: baseline;
 }
 
 .plan-card.highlight {
@@ -549,33 +538,28 @@ h1, h2, h3, h4 {
 }
 
 /* Pricing Conversion Optimizations */
-.top-edge-badge {
+.plan-card.signature-card {
+  border: 2px solid #0055FF;
+  background: linear-gradient(180deg, rgba(0, 85, 255, 0.08) 0%, #0d0d0d 100%);
+  transform: translateY(-10px);
+}
+.plan-card.signature-card .plan-cta {
+  background: #0055FF;
+  border: none;
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0, 85, 255, 0.3);
+}
+.plan-card.signature-card .top-edge-badge {
   position: absolute;
-  top: 0;
+  top: -14px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  background: linear-gradient(90deg, #FFB75E, #ED8F03);
+  transform: translateX(-50%);
+  background: #FFB75E;
   color: #000;
+  border-radius: 20px;
+  padding: 4px 16px;
+  font-size: 12px;
   font-weight: 800;
-  padding: 6px 16px;
-  border-radius: 30px;
-  white-space: nowrap;
-  font-size: 11px;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(237, 143, 3, 0.4);
-  text-transform: uppercase;
-}
-
-@keyframes periodicBounce {
-  0%, 85%, 100% { transform: translateY(0); }
-  90% { transform: translateY(-12px); }
-  94% { transform: translateY(0); }
-  97% { transform: translateY(-6px); }
-}
-
-.signature-card {
-  animation: periodicBounce 6s infinite ease-in-out;
 }
 
 @keyframes shine {
@@ -595,11 +579,11 @@ h1, h2, h3, h4 {
 }
 
 .monthly-breakdown {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
-  font-style: italic;
-  display: block;
-  margin-top: 4px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 10px;
+  font-weight: normal;
+  display: inline;
 }
 .plan-features {
   list-style: none;
@@ -608,39 +592,40 @@ h1, h2, h3, h4 {
 }
 .plan-features li {
   color: var(--text-silver);
-  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 12px 0;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   font-family: var(--font-body);
   font-size: 0.95rem;
-  line-height: 1.4;
 }
 .plan-features li svg {
   width: 18px;
   height: 18px;
-  color: var(--accent-blue);
+  color: #0055FF;
   margin-right: 12px;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 .plan-cta {
-  display: block;
+  border-radius: 50px;
   width: 100%;
-  padding: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  padding: 14px 0;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
   background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  display: block;
+  text-align: center;
+  margin-top: auto;
   text-decoration: none;
   font-family: var(--font-heading);
   font-size: 1.1rem;
-  letter-spacing: 1.5px;
-  transition: all 0.3s;
-  border-radius: 50px;
-  text-align: center;
-  margin-top: auto;
 }
 .plan-cta:hover {
-  border-color: var(--accent-blue);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Retained for Community & Modal Buttons */
@@ -1941,24 +1926,7 @@ dialog#gallery-modal::backdrop {
     height: auto !important;
   }
 
-  .plan-card {
-    width: 100% !important;
-    height: auto !important;
-    padding: 15px !important;
-  }
 
-  .plan-card .plan-name { font-size: 1.2rem !important; margin-bottom: 5px !important; }
-  .plan-card .plan-price { font-size: 1.1rem !important; margin-bottom: 5px !important; }
-  .plan-card .top-edge-badge { font-size: 9px !important; padding: 4px 8px !important; }
-  .plan-card .plan-eyebrow { font-size: 0.6rem !important; margin-bottom: 3px !important; }
-  .plan-card .plan-duration { font-size: 0.75rem !important; padding: 4px 8px !important; margin-bottom: 10px !important; }
-  .plan-card .plan-features { margin-bottom: 15px !important; }
-  .plan-card .plan-features li { font-size: 0.75rem !important; margin-bottom: 6px !important; line-height: 1.2 !important; }
-  .plan-card .plan-features li svg { width: 14px !important; height: 14px !important; margin-right: 6px !important; }
-  .plan-card .plan-cta { font-size: 0.75rem !important; padding: 8px !important; }
-  .plan-card .student-badge { font-size: 8px !important; padding: 8px !important; margin-top: 3px !important; }
-  .plan-card .monthly-breakdown { font-size: 10px !important; }
-  .plan-card .secondary-btn { font-size: 0.8rem !important; padding: 8px !important; margin-top: 8px !important; margin-bottom: 8px !important; }
 
   .service-card,
   .compact-amenity-card {
@@ -2056,29 +2024,27 @@ dialog#gallery-modal::backdrop {
     position: relative !important;
   }
 
-  /* Fix 2: Pricing Cards Grid (Strict Stack) */
+  /* Fix 2: Pricing Cards Grid (Swipe to Explore) */
   .plans-grid {
     display: flex !important;
-    flex-direction: column !important;
-    gap: 4rem !important;
-    padding: 2rem 15px !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 1rem !important;
+    padding-bottom: 2rem !important;
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .plans-grid::-webkit-scrollbar {
+    display: none !important;
   }
   .plan-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
+    min-width: 85vw !important;
+    scroll-snap-align: center !important;
+    flex-shrink: 0 !important;
   }
   .plan-card.signature-card {
     transform: none !important;
-    margin-top: 2rem !important;
-    margin-bottom: 2rem !important;
-    position: relative !important;
-    top: auto !important;
-    bottom: auto !important;
-  }
-  .top-edge-badge {
-    left: 50% !important;
-    transform: translateX(-50%) !important;
   }
 
   /* Fix 3: Gallery Native Scroll (Swipe to Explore) */
