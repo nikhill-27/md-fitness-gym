@@ -2122,3 +2122,25 @@ dialog#gallery-modal::backdrop {
     font-size: 0.75rem !important;
   }
 }
+
+/* Mobile Hero Canvas Animation Fixes */
+@media (max-width: 768px) {
+  .hero-text-container {
+    padding-top: 100px !important;
+  }
+  
+  #animation-canvas {
+    width: 100vw !important;
+    height: 100dvh !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+  
+  .hero-wrapper {
+    margin-bottom: 0 !important;
+  }
+  
+  .canvas-pin-container {
+    background-color: var(--bg-dark) !important;
+  }
+}

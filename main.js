@@ -11,9 +11,13 @@ window.addEventListener('scroll', () => {
 });
 
 /* --- Canvas Animation Configuration --- */
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
 const config = {
-  frameCount: 173,
-  framePath: (index) => `./frames/ezgif-1396dc2b0598705c-jpg/ezgif-frame-${String(index).padStart(3, '0')}.jpg`,
+  frameCount: isMobile ? 157 : 173,
+  framePath: (index) => isMobile 
+    ? `./assets/animated-hero-mobile/ezgif-frame-${String(index).padStart(3, '0')}.jpg`
+    : `./frames/ezgif-1396dc2b0598705c-jpg/ezgif-frame-${String(index).padStart(3, '0')}.jpg`,
   scrollLength: "450vh", // Scrub duration
   scrubSpeed: 0.8
 };
