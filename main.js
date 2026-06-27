@@ -14,7 +14,7 @@ window.addEventListener('scroll', () => {
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 const frameCount = isMobile ? 157 : 173; 
 const getFrame = index => isMobile 
-  ? './animated-hero-mobile/' + index + '.webp' 
+  ? `./assets/animated-hero-mobile/ezgif-frame-${(index).toString().padStart(3, '0')}.jpg` 
   : `./frames/ezgif-1396dc2b0598705c-jpg/ezgif-frame-${(index).toString().padStart(3, '0')}.jpg`;
 
 const config = {
