@@ -172,9 +172,10 @@ function initScrollAnimations() {
       scrollTrigger: {
         trigger: ".hero-wrapper",
         start: "top top",
-        end: isMobile ? "+=250%" : "+=400%",
+        end: isMobile ? "+=150%" : "+=400%",
         scrub: isMobile ? 0.1 : config.scrubSpeed,
         pin: ".canvas-pin-container",
+        pinSpacing: true,
       }
     });
 
@@ -182,7 +183,7 @@ function initScrollAnimations() {
       opacity: 0,
       duration: 0.15,
       ease: "power1.out"
-    });
+    }, 0);
 
     heroTl.to(airRender, {
       frame: config.frameCount - 1,
