@@ -2140,10 +2140,18 @@ dialog#gallery-modal::backdrop {
     text-align: center !important;
   }
 
-  /* Remove Empty Margins */
-  .hero-wrapper, 
+  /* Remove Empty Margins & Apply Slide-Over Effect */
+  .hero-wrapper {
+    margin: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+  
   #amenities {
     margin: 0 !important;
+    position: relative !important;
+    z-index: 20 !important;
+    background-color: var(--bg-dark) !important;
   }
 
   /* Reset the Grid Container */
