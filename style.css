@@ -2097,3 +2097,77 @@ dialog#gallery-modal::backdrop {
     background-color: var(--bg-dark) !important;
   }
 }
+
+/* ELITE MOBILE OVERRIDES - HERO & PRICING GRID */
+@media (max-width: 768px) {
+  /* Hero Text Grammatical Wrapping Fix */
+  .hero-finale-tagline {
+    word-break: keep-all !important; 
+    overflow-wrap: normal !important; 
+    hyphens: none !important; 
+    font-size: 1.5rem !important; 
+    line-height: 1.4 !important; 
+    white-space: pre-wrap !important;
+  }
+
+  /* Un-hide Mobile Canvas */
+  #animation-canvas {
+    display: block !important; 
+    opacity: 1 !important; 
+    visibility: visible !important; 
+    z-index: 1 !important; 
+    width: 100vw !important; 
+    height: 100dvh !important; 
+    background: transparent !important;
+    object-fit: cover !important;
+  }
+
+  /* Reset the Grid Container */
+  .plans-grid {
+    display: grid !important; 
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 12px !important; 
+    padding: 2rem 10px !important; 
+    align-items: stretch !important;
+    overflow: hidden !important;
+  }
+
+  /* Nuke Signature Card Overlap */
+  .plan-card.signature-card {
+    transform: none !important; 
+    margin: 0 !important; 
+    top: 0 !important; 
+    position: relative !important;
+  }
+
+  /* Fix Early Bird Badges (Allow 2 Lines) */
+  .plan-card .top-edge-badge {
+    white-space: normal !important; 
+    width: 90% !important; 
+    max-width: 130px !important; 
+    font-size: 0.55rem !important; 
+    line-height: 1.2 !important; 
+    height: auto !important; 
+    padding: 4px !important; 
+    text-align: center !important; 
+    top: -15px !important;
+  }
+
+  /* Shrink Cards & Buttons for 2x2 Survival */
+  .plan-card {
+    padding: 25px 10px 15px 10px !important; 
+    width: 100% !important; 
+    margin: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .plan-cta {
+    font-size: 0.6rem !important; 
+    padding: 8px 4px !important; 
+    white-space: normal !important; 
+    line-height: 1.1 !important;
+  }
+
+  .plan-price { font-size: 1.3rem !important; }
+  .plan-name { font-size: 0.85rem !important; }
+}
