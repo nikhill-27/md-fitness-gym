@@ -2030,21 +2030,18 @@ dialog#gallery-modal::backdrop {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px !important;
-    width: 100% !important;
     padding: 0 10px !important;
-    overflow: hidden !important; /* Kills the horizontal swipe */
-    flex-wrap: wrap !important;
+    overflow: hidden !important;
   }
   
   .plan-card {
-    padding: 12px 8px !important;
-    min-width: 0 !important; /* Prevents flex blowouts */
+    padding: 15px 10px !important;
+    min-width: 0 !important;
   }
 
   .plan-price { font-size: 1.4rem !important; }
   .plan-name { font-size: 0.9rem !important; }
-  .plan-features { font-size: 0.65rem !important; margin-bottom: 4px !important; }
-  .top-edge-badge { font-size: 0.5rem !important; padding: 2px 6px !important; }
+  .plan-features { font-size: 0.7rem !important; }
 
   /* Fix 3: Gallery Native Scroll (Swipe to Explore) */
   .marquee-wrapper {

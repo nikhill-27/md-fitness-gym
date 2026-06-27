@@ -11,18 +11,15 @@ window.addEventListener('scroll', () => {
   }
 });
 
-/* --- Canvas Animation Configuration --- */
 const isMobile = window.matchMedia("(max-width: 768px)").matches;
 const frameCount = isMobile ? 157 : 173; 
-const currentFrame = index => (
-  isMobile 
-    ? `./assets/animated-hero-mobile/ezgif-frame-${(index).toString().padStart(3, '0')}.jpg` 
-    : `./frames/ezgif-1396dc2b0598705c-jpg/ezgif-frame-${(index).toString().padStart(3, '0')}.jpg` 
-);
+const getFrame = index => isMobile 
+  ? './animated-hero-mobile/' + index + '.webp' 
+  : `./frames/ezgif-1396dc2b0598705c-jpg/ezgif-frame-${(index).toString().padStart(3, '0')}.jpg`;
 
 const config = {
   frameCount: frameCount,
-  framePath: currentFrame,
+  framePath: getFrame,
   scrollLength: "450vh", // Scrub duration
   scrubSpeed: 0.8
 };
@@ -94,15 +91,21 @@ function preloadImages() {
     const img = new Image();
     img.src = config.framePath(i);
     
-    img.onload = () => handleLoadProgress();
-    img.onerror = () => handleLoadProgress(); // skip broken frames silently
+    img.onload = () => {
+      imagesLoaded++;
+      updateProgress();
+    };
+    img.onerror = () => {
+      imagesLoaded++;
+      updateProgress();
+      console.error('Missing frame:', img.src);
+    };
     
     frames.push(img);
   }
 }
 
-function handleLoadProgress() {
-  imagesLoaded++;
+function updateProgress() {
   const percentage = Math.round((imagesLoaded / config.frameCount) * 100);
   
   progressBar.style.width = `${percentage}%`;
