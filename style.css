@@ -950,19 +950,17 @@ dialog#gallery-modal::backdrop {
 }
 .success-visual {
   position: relative !important;
-  min-height: 550px !important; /* Forces the box open */
+  height: auto !important;
+  min-height: 0 !important;
+  aspect-ratio: 3 / 4 !important;
+  max-width: 450px !important;
+  margin: 0 auto !important;
   width: 100% !important;
   overflow: hidden !important;
   border-radius: 16px !important;
   display: block !important;
   border: 1px solid var(--accent-blue);
   box-shadow: 0 10px 40px rgba(0, 85, 255, 0.15);
-}
-@media (max-width: 768px) {
-  .success-visual {
-    min-height: 400px !important;
-    margin-bottom: 2rem !important;
-  }
 }
 .success-visual::after {
   content: '';
@@ -1011,9 +1009,13 @@ dialog#gallery-modal::backdrop {
   aspect-ratio: 4 / 5;
 }
 .success-badge {
-  position: absolute;
-  top: 20px;
-  left: 20px;
+  position: absolute !important;
+  bottom: 24px !important;
+  top: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 20 !important;
+  white-space: nowrap !important;
   background: rgba(25, 25, 25, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -1024,7 +1026,6 @@ dialog#gallery-modal::backdrop {
   color: var(--text-silver);
   font-size: 0.85rem;
   letter-spacing: 1px;
-  z-index: 2;
 }
 .success-content {
   padding: 20px 0;
