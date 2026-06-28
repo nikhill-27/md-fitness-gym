@@ -2052,8 +2052,12 @@ dialog#gallery-modal::backdrop {
     min-height: 100dvh !important;
   }
   #animation-canvas {
+    height: 100dvh !important;
+    width: 100vw !important;
     object-fit: cover !important;
-    position: relative !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
   }
 
   /* Fix 2: Pricing Cards Grid (Forced 2x2) */

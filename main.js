@@ -173,7 +173,7 @@ function initScrollAnimations() {
         scrollTrigger: {
           trigger: ".hero-wrapper",
           start: "top top",
-          end: "+=250%",
+          end: "+=150%",
           scrub: true,
           pin: ".canvas-pin-container",
           pinSpacing: false,
