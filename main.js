@@ -496,6 +496,38 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === galleryModal) galleryModal.close();
     });
   }
+  /* --- Voices of Victory Carousel Logic --- */
+  const victoryTrack = document.getElementById('victory-track');
+  if (victoryTrack) {
+    const successVideo = victoryTrack.querySelector('video');
+    let isShowingPhoto = true;
+
+    const showVideo = () => {
+      isShowingPhoto = false;
+      victoryTrack.style.transform = 'translateX(-50%)';
+      if (successVideo) {
+        successVideo.currentTime = 0;
+        successVideo.play();
+      }
+    };
+
+    const showPhoto = () => {
+      isShowingPhoto = true;
+      victoryTrack.style.transform = 'translateX(0)';
+      setTimeout(() => {
+        if (isShowingPhoto) showVideo();
+      }, 3000);
+    };
+
+    if (successVideo) {
+      successVideo.addEventListener('ended', () => {
+        showPhoto();
+      });
+    }
+
+    // Initiate loop
+    showPhoto();
+  }
 });
 
 /* --- Mobile GSAP Resize Fix --- */
