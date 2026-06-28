@@ -2125,6 +2125,18 @@ dialog#gallery-modal::backdrop {
     z-index: 1 !important;
   }
 
+  /* Optimal Mobile Poster Frame Fallback */
+  .mobile-poster-frame {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    object-fit: cover !important;
+    z-index: 0 !important;
+  }
+
   /* Resurrect & Center the Mobile Text */
   .hero-text-container {
     display: flex !important;
