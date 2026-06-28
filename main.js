@@ -168,49 +168,95 @@ function initScrollAnimations() {
     // Desktop and Mobile Hero Canvas Animation
     const airRender = { frame: 0 };
     
-    const heroTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: ".hero-wrapper",
-        start: "top top",
-        end: isMobile ? "+=150%" : "+=400%",
-        scrub: isMobile ? 0.1 : config.scrubSpeed,
-        pin: ".canvas-pin-container",
-        pinSpacing: true,
-      }
-    });
-
-    heroTl.to(".hero-text-container", {
-      opacity: 0,
-      duration: 0.15,
-      ease: "power1.out"
-    }, 0);
-
-    heroTl.to(airRender, {
-      frame: config.frameCount - 1,
-      ease: "none",
-      duration: 0.85,
-      onUpdate: () => {
-        const frameIndex = Math.round(airRender.frame);
-        if (currentFrame !== frameIndex) {
-          currentFrame = frameIndex;
-          drawFrame(currentFrame);
+    if (isMobile) {
+      const heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".hero-wrapper",
+          start: "top top",
+          end: "+=250%",
+          scrub: true,
+          pin: ".canvas-pin-container",
+          pinSpacing: false,
         }
-      }
-    });
+      });
 
-    heroTl.to(".hero-finale-tagline", {
-      opacity: 1,
-      transform: "translate(-50%, -50%)",
-      duration: 0.15,
-      ease: "power1.out"
-    }, "-=0.15");
+      heroTl.to(".hero-text-container", {
+        opacity: 0,
+        duration: 0.15,
+        ease: "power1.out"
+      }, 0);
 
-    heroTl.to(".explore-scroll-btn", {
-      opacity: 1,
-      pointerEvents: "auto",
-      duration: 0.15,
-      ease: "power1.out"
-    }, "<");
+      heroTl.to(airRender, {
+        frame: config.frameCount - 1,
+        ease: "none",
+        duration: 0.85,
+        onUpdate: () => {
+          const frameIndex = Math.round(airRender.frame);
+          if (currentFrame !== frameIndex) {
+            currentFrame = frameIndex;
+            drawFrame(currentFrame);
+          }
+        }
+      });
+
+      heroTl.to(".hero-finale-tagline", {
+        opacity: 1,
+        transform: "translate(-50%, -50%)",
+        duration: 0.15,
+        ease: "power1.out"
+      }, "-=0.15");
+
+      heroTl.to(".explore-scroll-btn", {
+        opacity: 1,
+        pointerEvents: "auto",
+        duration: 0.15,
+        ease: "power1.out"
+      }, "<");
+    } else {
+      const heroTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".hero-wrapper",
+          start: "top top",
+          end: "+=400%",
+          scrub: config.scrubSpeed,
+          pin: ".canvas-pin-container",
+          pinSpacing: true,
+        }
+      });
+
+      heroTl.to(".hero-text-container", {
+        opacity: 0,
+        duration: 0.15,
+        ease: "power1.out"
+      }, 0);
+
+      heroTl.to(airRender, {
+        frame: config.frameCount - 1,
+        ease: "none",
+        duration: 0.85,
+        onUpdate: () => {
+          const frameIndex = Math.round(airRender.frame);
+          if (currentFrame !== frameIndex) {
+            currentFrame = frameIndex;
+            drawFrame(currentFrame);
+          }
+        }
+      });
+
+      heroTl.to(".hero-finale-tagline", {
+        opacity: 1,
+        transform: "translate(-50%, -50%)",
+        duration: 0.15,
+        ease: "power1.out"
+      }, "-=0.15");
+
+      heroTl.to(".explore-scroll-btn", {
+        opacity: 1,
+        pointerEvents: "auto",
+        duration: 0.15,
+        ease: "power1.out"
+      }, "<");
+    }
     
     // On mobile, trigger later (top 90%) to ensure it's fully on screen before animating
     const triggerStart = isMobile ? "top 90%" : "top 80%";
