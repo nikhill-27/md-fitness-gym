@@ -493,10 +493,16 @@
       </div>
 
       <div class="success-grid">
-        <div class="success-visual" style="pointer-events: none;">
-          <div class="victory-track" id="victory-track">
-            <img src="./assets/voices-of-victory/PHOTO-2026-06-28-14-07-33.jpg" alt="Transformation Success" class="success-img">
-            <video src="./assets/voices-of-victory/VIDEO-2026-06-28-14-07-40.mp4" autoplay muted playsinline class="success-img" style="width: 50%;"></video>
+        <div class="success-visual" style="position: relative; overflow: hidden; pointer-events: none;">
+          <div class="transformation-carousel-wrapper">
+            <div class="transformation-carousel-track">
+              <div class="carousel-slide">
+                <img src="./assets/voices-of-victory/PHOTO-2026-06-28-14-07-33.jpg" alt="Transformation Before" loading="lazy" decoding="async">
+              </div>
+              <div class="carousel-slide">
+                <video src="./assets/voices-of-victory/VIDEO-2026-06-28-14-07-40.mp4" autoplay loop muted playsinline preload="metadata"></video>
+              </div>
+            </div>
           </div>
           <div class="success-badge">Featured Transformation</div>
         </div>
