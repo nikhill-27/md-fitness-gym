@@ -496,6 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === galleryModal) galleryModal.close();
     });
   }
+
 });
 
 /* --- Mobile GSAP Resize Fix --- */
